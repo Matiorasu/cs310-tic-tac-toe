@@ -1,5 +1,12 @@
 package edu.jsu.mcis;
 
+/*
+Seth Medders
+Acessed: 9.12.20
+*/
+
+import javax.swing.*;
+
 public class TicTacToe {
     
     public static final int DEFAULT_WIDTH = 3;
@@ -18,16 +25,18 @@ public class TicTacToe {
                 width = Integer.parseInt(args[0]);
             }
             catch(NumberFormatException e) {}
-            
         }
         
         /* Create Controller */
 
         TicTacToeController controller = new TicTacToeController(width);
         
-        /* Start Main Loop */
-        controller.start();
+        /*create our new window.*/
+        
+        JFrame win = new JFrame("Tic-Tac-Toe");
+        win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        win.add(controller.getView());
+        win.pack();
+        win.setVisible(true);
     }
-    
-    
 }

@@ -2,10 +2,13 @@ package edu.jsu.mcis;
 
 /*
 Seth Medders
-Acessed: 9.10.20
+Acessed: 9.12.20
 */
 
-public class TicTacToeController {
+import java.awt.event.*;
+import javax.swing.*;
+
+public class TicTacToeController implements ActionListener {
 
     private final TicTacToeModel model;
     private final TicTacToeView view;
@@ -17,39 +20,52 @@ public class TicTacToeController {
         /* Initialize model, view, and width */
 
         model = new TicTacToeModel(width);
-        view = new TicTacToeView();
+        view = new TicTacToeView(this, width);
         
     }
+    
+    public String getMarkAsString(int row, int col) {       
+        return (model.getMark(row, col).toString());       
+    }
+   
+    public TicTacToeView getView() {       
+        return view;       
+    }
 
-    public void start() {
+    @Override
+    public void actionPerformed(ActionEvent event) {
         
-        /* MAIN LOOP (repeats until game is over) *
-
-        /* Display the board using the View's "showBoard()", then use
-           "getNextMove()" to get the next move from the player.  Enter
-           the move (using the Model's "makeMark()", or display an error
-           using the View's "showInputError()" if the move is invalid. */
-
-        // INSERT YOUR CODE HERE
-        
-        while(!model.isGameover()) {
+        if (event.getSource().getClass() == JButton.class) {
             
-            view.showBoard(model.toString());
+            JButton pressedButton = ((JButton)event.getSource());
             
-            TicTacToeMove t = view.getNextMove(model.isXTurn());
-
-            while (!model.makeMark(t.getRow(), t.getCol())) {
-                view.showInputError();
+            int row, col;
+            
+            row = Character.getNumericValue(pressedButton.getName().charAt(6));
+            col = Character.getNumericValue(pressedButton.getName().charAt(7));
+            
+            if (model.makeMark(row, col)) {
+				
+				view.showResult(pressedButton.getName());
                 
-                t = view.getNextMove(model.isXTurn());
+                view.clearResult();
+                
+                view.updateSquares(row, col);
             }
+            
+            else {
+                
+                view.showResult("Entered location is invalid, already marked, or out of bounds.");
+            }
+            
+            if (model.isGameover()) {
+                
+                view.disableSquares();
+                
+                view.showResult(model.getResult().name());
+            }
+            
         }
-        
-        /* After the game is over, show the final board and the winner */
-
-        view.showBoard(model.toString());
-
-        view.showResult(model.getResult().toString());
         
     }
 
